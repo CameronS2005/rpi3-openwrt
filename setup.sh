@@ -216,6 +216,7 @@ EOF
 if [[ ${ques}=="y" ]]; then
   cd ~
   wget https://raw.githubusercontent.com/CameronS2005/rpi3-openwrt/main/adapter.sh
+  chmod +x adapter.sh
 fi
 
   rm /root/setup.sh

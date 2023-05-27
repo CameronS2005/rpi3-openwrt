@@ -1,22 +1,27 @@
 ## ALOT OF THIS SED CAN BE REPLACED WITH EXAMPLE uci "dropbear.@dropbear[0].RootPasswordAuth='off'"
-## wifi config
-wifi_ssid="SSID"
-wifi_password="PASSWORD"
-wifi_channel="6" # !!! this would be the main reason your wifi isnt connecting! (GET IT RIGHT!)
-wifi_enc="psk2" # none=open, psk2=wpa2 (if none wifi_password is ignored in /etc/config/wireless)
 # New Lan & Adguard DNS Config (adguard_port must be same you set in Adguard Gui install!)
 lan_addr="10.71.71.1"
 adguard_port="5353"
-dns1="1.1.1.1"; dns2="8.8.8.8" # backend dns servers
+dns1="208.67.222.222"; dns2="208.67.220.220" # backend dns servers (currently: opendns)
 # Config Backup Location
 conf_backup="/etc/config/conf_backup"
 # Pastebin Config
-pastebin_ovpn_conf="https://pastebin.com/raw/" # ovpn conf file (add auth-user-pass client.conf and redirect-gateway def1 ipv6 to the bottom of your conf!)
-pastebin_ovpn_auth="https://pastebin.com/raw/" # first line username, second line password!
-pastebin_pub_key="https://pastebin.com/raw/" # your rsa public key so you can ssh into the router!
+pastebin_ovpn_conf="https://pastebin.com/raw/UPLOAD-YOURS" # ovpn conf file (add auth-user-pass client.conf and redirect-gateway def1 ipv6 to the bottom of your conf!)
+pastebin_ovpn_auth="https://pastebin.com/raw/UPLOAD-YOURS" # first line username, second line password!
+pastebin_pub_key="https://pastebin.com/raw/UPLOAD-YOURS" # your public rsa key so you can ssh into the router!
 #
 ##
 status="0" # MODIFY NEEDED LINES! (MODIFY WIFI INFO AND PASTEBIN LINKS!)
+
+## Requesting wifi-details
+wifi_enc="psk2" # none=open, psk2=wpa2 (if none wifi_password is ignored in /etc/config/wireless)
+echo "Enter Your Wifi Details Below!"
+echo "Enter SSID:"
+read -r wifi_ssid
+echo "Enter PASSWORD: (Longer than 8 Characters (I think))"
+read -r wifi_password
+echo "Enter CHANNEL (1-11)"
+read -r wifi_channel
 
 if [[ "${status}" == "0" ]]; then
   echo "Requesting Set of Hardcoded Root Password!"
@@ -205,6 +210,13 @@ EOF
   ## ADD CHECK FOR FAIL (CAUSE IF NO KEY YOU WONT BE ABLE TO SSH...)
 
   uci commit dropbear
+
+  echo "Do you want to download adapter.sh? (y/n)"
+  read -r ques
+if [[ ${ques}=="y" ]]; then
+  cd ~
+  wget https://raw.githubusercontent.com/CameronS2005/rpi3-openwrt/main/adapter.sh
+fi
 
   rm /root/setup.sh
 

@@ -62,6 +62,14 @@ read -p "Press Enter to Start AP! (Will Reboot!)"
 
 #rm /root/adapter.sh
 
+  cat <<EOF > /etc/rc.local # this belongs in adapter.sh
+wifi
+
+exit 0
+EOF
+chmod +x /etc/rc.local
+
+
 uci commit wireless
 wifi
 sleep 10

@@ -11,9 +11,10 @@ Custom setup script for a Raspberry Pi running OpenWrt (This was tested on a Ras
 This setup is designed to be ran on a fresh install of OpenWrt on a raspberry pi, the script will automatically configure your wireless connection to your wifi and setup your vpn configuration!
 
 This will also setup AdguardHome DNS Server!
-------------------------------------------------------------------------
 
 Running the setup.sh script guide below...
+
+------------------------------------------------------------------------
 
 BE SURE YOU MODIFY LINES 9,10,11 in setup.sh with your uploaded ovpn conf, auth, and your computers public key for ssh!
 

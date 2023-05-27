@@ -1,43 +1,36 @@
-#!/bin/sh
-
-## A LOT OF THIS SED CAN BE REPLACED WITH EXAMPLE uci "dropbear.@dropbear[0].RootPasswordAuth='off'"
-
-## WiFi Configuration
-wifi_ssid="YOUR-WIFI-NAME"
-wifi_password="WIFI-PASSWORD"
-wifi_channel="CHANNEL1-11" # !!! This could be the main reason your WiFi isn't connecting! (GET IT RIGHT!)
-wifi_enc="psk2" # none=open, psk2=wpa2 (if none, wifi_password is ignored in /etc/config/wireless)
-
-## New LAN & AdGuard DNS Config (adguard_port must be the same as you set in the AdGuard GUI install!)
+## ALOT OF THIS SED CAN BE REPLACED WITH EXAMPLE uci "dropbear.@dropbear[0].RootPasswordAuth='off'"
+## wifi config
+wifi_ssid="SSID"
+wifi_password="PASSWORD"
+wifi_channel="6" # !!! this would be the main reason your wifi isnt connecting! (GET IT RIGHT!)
+wifi_enc="psk2" # none=open, psk2=wpa2 (if none wifi_password is ignored in /etc/config/wireless)
+# New Lan & Adguard DNS Config (adguard_port must be same you set in Adguard Gui install!)
 lan_addr="10.71.71.1"
 adguard_port="5353"
-dns1="1.1.1.1" # Backend DNS servers
-dns2="8.8.8.8" # Backend DNS servers
-
-## Config Backup Location
+dns1="1.1.1.1"; dns2="8.8.8.8" # backend dns servers
+# Config Backup Location
 conf_backup="/etc/config/conf_backup"
+# Pastebin Config
+pastebin_ovpn_conf="https://pastebin.com/raw/" # ovpn conf file (add auth-user-pass client.conf and redirect-gateway def1 ipv6 to the bottom of your conf!)
+pastebin_ovpn_auth="https://pastebin.com/raw/" # first line username, second line password!
+pastebin_pub_key="https://pastebin.com/raw/" # your rsa public key so you can ssh into the router!
+#
+##
+status="0" # MODIFY NEEDED LINES! (MODIFY WIFI INFO AND PASTEBIN LINKS!)
 
-## Pastebin Config
-pastebin_ovpn_conf="https://pastebin.com/raw/RAW-PASTEBIN" # ovpn conf file (add auth-user-pass client.conf and redirect-gateway def1 ipv6 to the bottom of your conf!)
-pastebin_ovpn_auth="https://pastebin.com/raw/RAW-PASTEBIN" # first line username, second line password!
-pastebin_pub_key="https://pastebin.com/raw/RAW-PASTEBIN" # your RSA public key so you can SSH into the router!
-
-## Status (MODIFY NEEDED LINES! MODIFY WIFI INFO AND PASTEBIN LINKS!)
-status="0"
-
-if [ "${status}" = "0" ]; then
+if [[ "${status}" == "0" ]]; then
   echo "Requesting Set of Hardcoded Root Password!"
   passwd
 
   echo "Creating Conf File Backups! @ ${conf_backup}"
 
-  mkdir -p "${conf_backup}"
-  cp /etc/config/network "${conf_backup}/network.bk"
-  cp /etc/config/wireless "${conf_backup}/wireless.bk"
-  cp /etc/config/uhttpd "${conf_backup}/uhttpd.bk"
-  cp /etc/config/firewall "${conf_backup}/firewall.bk"
-  cp /etc/config/dhcp "${conf_backup}/dhcp.bk"
-  cp /etc/config/dropbear "${conf_backup}/dropbear.bk"
+  mkdir -p ${conf_backup}
+  cp /etc/config/network ${conf_backup}/network.bk
+  cp /etc/config/wireless ${conf_backup}/wireless.bk
+  cp /etc/config/uhttpd ${conf_backup}/uhttpd.bk
+  cp /etc/config/firewall ${conf_backup}/firewall.bk
+  cp /etc/config/dhcp ${conf_backup}/dhcp.bk
+  cp /etc/config/dropbear ${conf_backup}/dropbear.bk
 
   echo "Starting Wireless Configuration..."
 
@@ -95,7 +88,7 @@ config wifi-iface 'wifinet1'
 EOF
 
   sed -i '4,6d' /etc/config/uhttpd
-  sed -i '20s/.*/    option input ACCEPT/' /etc/config/firewall
+  sed -i '20s/.*/ option input    ACCEPT/' /etc/config/firewall
 
   uci commit network
   uci commit wireless
@@ -110,7 +103,7 @@ EOF
   /etc/init.d/firewall restart
   /etc/init.d/network restart
 
-elif [ "${status}" = "1" ]; then
+elif [[ "${status}" == "1" ]]; then
   #sleep 30
   echo "Starting Part 2 of Configuration!"
 
@@ -140,8 +133,8 @@ elif [ "${status}" = "1" ]; then
 
   echo "" > /etc/config/openvpn # clears the sample configs
 
-  wget -O /etc/openvpn/client.conf "${pastebin_ovpn_conf}" # vpn conf file
-  wget -O /etc/openvpn/client.auth "${pastebin_ovpn_auth}" # vpn cred file (line 1 user, line 2 pass)
+  wget -O /etc/openvpn/client.conf ${pastebin_ovpn_conf} # vpn conf file
+  wget -O /etc/openvpn/client.auth ${pastebin_ovpn_auth} # vpn cred file (line 1 user, line 2 pass)
 
   /etc/init.d/openvpn restart
 
@@ -207,18 +200,17 @@ config dropbear
         option interface 'br-lan'
 EOF
 
-  wget -O /etc/dropbear/authorized_keys "${pastebin_pub_key}" # public key for ssh
-  ## ADD CHECK FOR FAIL (CAUSE IF NO KEY EXISTS, DROPBEAR WILL ERROR START!)
+
+  wget -O /etc/dropbear/authorized_keys ${pastebin_pub_key} # public key for ssh
+  ## ADD CHECK FOR FAIL (CAUSE IF NO KEY YOU WONT BE ABLE TO SSH...)
 
   uci commit dropbear
-  /etc/init.d/dropbear restart
 
-  /etc/init.d/network restart
+  rm /root/setup.sh
 
-  sed -i 's/status="1"/status="2"/' "$0"
+  echo "FINISHED!"
 
-elif [ "${status}" = "2" ]; then
-  echo "Configuration Completed!"
-else
-  echo "Unknown Status: ${status}"
+  read -p "Press Enter To Reboot! (Run adapter-setup.sh to set up access point)"
+
+  reboot
 fi

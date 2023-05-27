@@ -32,6 +32,8 @@ Press Enter when it tell you to, it will disconnect you, but your raspberry pi i
 
 execute the setup script for the second time; ./setup.sh
 
+!! IF PART TWO FAILS RERUN IF IT KEEPS FAILING YOU CAN EITHER REBOOT OR DO /etc/init.d/network restart (both should fix it!) (part2 will also fail if you misconfigured your wifi!)
+
 Wait until opkg and all config installs finish!
 
 When it Says "Press Enter When Finished Installing AdGuard!" go to http://openwrt:3000 and finish the Adguard install via the web-gui

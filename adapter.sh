@@ -31,8 +31,14 @@ ifconfig wlan1 up
 # Prompt for AP configuration
 echo "Enter AP SSID:"
 read -r ssid
-echo "Enter AP Key: (must be longer than 8 digits)"
+echo "Enter AP Key: (must be longer than 8 digits) (can also enter random for a random password"
 read -r key
+if [[ ${key}=="random" ]]; then
+    echo "Enter Random Key Length: "
+    read -r length
+    key=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c ${length})
+    echo "Your Password Is ${key}"
+fi
 echo "Enter AP Channel (1-11):"
 read -r channel
 # add channel check (must be between 1 and 11!)

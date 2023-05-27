@@ -1,6 +1,6 @@
 # rpi3-openwrt
 
-If you need any help feel free to ask any questions! (By no means am I a professional but this is a project of mine so i'd be glad to help!)
+If you need any help feel free to ask any questions!
 
 ## OpenWrt Raspberry Pi Wiki (With Downloads) (https://openwrt.org/toh/raspberry_pi_foundation/raspberry_pi)
 
@@ -30,6 +30,8 @@ make the setup script executable; chmod +x setup.sh
 execute the setup script for the first time; ./setup.sh
 
 Will prompt you to set the root passwd!
+
+Will prompt you to enter your wifi details!
 
 Press Enter when it tell you to, it will disconnect you, but your raspberry pi isnt rebooting, so just wait like 5 seconds for network to restart then you can reconnect.
 

@@ -54,4 +54,4 @@ chmod +x adapter.sh
 
 ./adapter.sh
 
-FOLLOW THE INSTRUCTIONS, ITS VERY SIMPLE!
+##

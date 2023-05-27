@@ -1,5 +1,7 @@
 # rpi3-openwrt
 
+If you need any help feel free to ask any questions! (By no means am I a professional but this is a project of mine so i'd be glad to help!)
+
 ## OpenWrt Raspberry Pi Wiki (With Downloads) (https://openwrt.org/toh/raspberry_pi_foundation/raspberry_pi)
 
 ## Raspberry Pi Imager (https://www.raspberrypi.com/software/)
@@ -8,6 +10,7 @@ Custom setup script for a Raspberry Pi running OpenWrt (This was tested on a Ras
 
 This setup is designed to be ran on a fresh install of OpenWrt on a raspberry pi, the script will automatically configure your wireless connection to your wifi and setup your vpn configuration!
 
+This will also setup AdguardHome DNS Server!
 ------------------------------------------------------------------------
 
 Running the setup.sh script guide below...

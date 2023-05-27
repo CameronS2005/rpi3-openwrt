@@ -26,6 +26,8 @@ make the setup script executable; chmod +x setup.sh
 
 execute the setup script for the first time; ./setup.sh
 
+Will prompt you to set the root passwd!
+
 Press Enter when it tell you to, it will disconnect you, but your raspberry pi isnt rebooting, so just wait like 5 seconds for network to restart then you can reconnect.
 
 execute the setup script for the second time; ./setup.sh

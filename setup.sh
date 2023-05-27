@@ -8,24 +8,24 @@ conf_backup="/etc/config/conf_backup"
 # Pastebin Config
 pastebin_ovpn_conf="https://pastebin.com/raw/UPLOAD-YOURS" # ovpn conf file (add auth-user-pass client.conf and redirect-gateway def1 ipv6 to the bottom of your conf!)
 pastebin_ovpn_auth="https://pastebin.com/raw/UPLOAD-YOURS" # first line username, second line password!
-pastebin_pub_key="https://pastebin.com/raw/UPLOAD-YOURS" # your public rsa key so you can ssh into the router!
+pastebin_pub_key="https://pastebin.com/raw/UPLOAD-YOURS" #your public rsa key so you can ssh into the router!
 #
 ##
 status="0" # MODIFY NEEDED LINES! (MODIFY WIFI INFO AND PASTEBIN LINKS!)
 
-## Requesting wifi-details
-wifi_enc="psk2" # none=open, psk2=wpa2 (if none wifi_password is ignored in /etc/config/wireless)
-echo "Enter Your Wifi Details Below!"
-echo "Enter SSID:"
-read -r wifi_ssid
-echo "Enter PASSWORD: (Longer than 8 Characters (I think))"
-read -r wifi_password
-echo "Enter CHANNEL (1-11)"
-read -r wifi_channel
-
 if [[ "${status}" == "0" ]]; then
   echo "Requesting Set of Hardcoded Root Password!"
   passwd
+
+  ## Requesting wifi-details
+  wifi_enc="psk2" # none=open, psk2=wpa2 (if none wifi_password is ignored in /etc/config/wireless)
+  echo "Enter Your Wifi Details Below!"
+  echo "Enter SSID:"
+  read -r wifi_ssid
+  echo "Enter PASSWORD: (Longer than 8 Characters (I think))"
+  read -r wifi_password
+  echo "Enter CHANNEL (1-11)"
+  read -r wifi_channel
 
   echo "Creating Conf File Backups! @ ${conf_backup}"
 

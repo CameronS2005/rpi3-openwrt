@@ -15,6 +15,8 @@ This will also setup AdguardHome DNS Server!
 
 Running the setup.sh script guide below...
 
+BE SURE YOU MODIFY LINES 9,10,11 in setup.sh with your uploaded ovpn conf, auth, and your computers public key for ssh!
+
 -----
 
 ssh into raspberry pi; ssh root@openwrt

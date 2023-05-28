@@ -2,7 +2,7 @@ status="0"
 
 read -rp "Press Enter To Continue! (WARNING: THIS MUST BE DONE OVER ETHERNET!)"
 
-if [[ ${status}=="0" ]]; then
+if [[ ${status} == "0" ]]; then
 # Backup wireless configuration (only done on first run)
 cp /etc/config/wireless /etc/config/conf_backup/wireless-pre-ap.bk
 sed -i 's/statkus="0"/status="1"/' "$0"
@@ -24,7 +24,7 @@ else
     exit 1
 fi
 
-#if [[ ${status}=="0" ]]; then
+#if [[ ${status} == "0" ]]; then
 ifconfig wlan1 up
 #fi
 
@@ -33,12 +33,13 @@ echo "Enter AP SSID:"
 read -r ssid
 echo "Enter AP Key: (must be longer than 8 digits) (can also enter random for a random password"
 read -r key
-if [[ ${key}=="random" ]]; then
+if [[ ${key} == "random" ]]; then
     echo "Enter Random Key Length: "
     read -r length
     key=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c ${length})
     echo "Your Password Is ${key}"
 fi
+
 echo "Enter AP Channel (1-11):"
 read -r channel
 # add channel check (must be between 1 and 11!)

@@ -26,6 +26,12 @@ if [[ "${status}" == "0" ]]; then
   read -r wifi_password
   echo "Enter CHANNEL (1-11): "
   read -r wifi_channel
+  if [[ ${wifi_channel} -ge "1" || ${wifi_channel} -le "11" ]]; then # checks if channel is valid
+    true
+  else
+    echo "Invalid Channel!"
+    exit 1
+  fi
 
   echo "Creating Conf File Backups! @ ${conf_backup}"
 
@@ -100,13 +106,11 @@ EOF
   uci commit uhttpd
   uci commit firewall
 
+  read -p "Press Enter To Continue! (WILL REBOOT!) (RECONNECT TO FINISH INSTALL RUN SETUP SCRIPT AGAIN)"
+
   sed -i 's/status="0"/status="1"/' "$0"
 
-  read -p "Press Enter To Continue! (WILL BE DISCONNECTED) (RECONNECT TO FINISH INSTALL RUN SETUP SCRIPT AGAIN)"
-
-  /etc/init.d/uhttpd restart
-  /etc/init.d/firewall restart
-  /etc/init.d/network restart
+  reboot
 
 elif [[ "${status}" == "1" ]]; then
   #sleep 30
@@ -124,8 +128,18 @@ elif [[ "${status}" == "1" ]]; then
     echo "opkg update completed successfully."
   fi
 
+  sleep 5
+
   mkdir -p /opt/ && cd /opt/
-  wget -c https://static.adguard.com/adguardhome/release/AdGuardHome_linux_arm64.tar.gz
+while true; do
+    if ! wget -c https://static.adguard.com/adguardhome/release/AdGuardHome_linux_arm64.tar.gz >/dev/null; then
+        echo "Adguard Download Failed! Press Enter to retry or Ctrl+C to exit."
+        read -r
+    else
+        break
+    fi
+done
+
   tar xfvz AdGuardHome_linux_arm64.tar.gz
   rm AdGuardHome_linux_arm64.tar.gz
 
@@ -136,10 +150,27 @@ elif [[ "${status}" == "1" ]]; then
 
   echo "Setting Up OpenVPN Config!"
 
-  echo "" > /etc/config/openvpn # clears the sample configs
+  echo "" > /etc/config/openvpn
 
-  wget -O /etc/openvpn/client.conf ${pastebin_ovpn_conf} # vpn conf file
-  wget -O /etc/openvpn/client.auth ${pastebin_ovpn_auth} # vpn cred file (line 1 user, line 2 pass)
+  sleep 5
+
+while true; do
+    if ! wget -O /etc/openvpn/client.conf ${pastebin_ovpn_conf} >/dev/null; then
+        echo "OpenVPN Conf-File Failed! Press Enter to retry or Ctrl+C to exit."
+        read -r
+    else
+        break
+    fi
+done
+
+while true; do
+    if ! wget -O /etc/openvpn/client.auth ${pastebin_ovpn_auth} >/dev/null; then
+        echo "OpenVPN Auth-File Failed! Press Enter to retry or Ctrl+C to exit."
+        read -r
+    else
+        break
+    fi
+done
 
   /etc/init.d/openvpn restart
 
@@ -147,7 +178,7 @@ elif [[ "${status}" == "1" ]]; then
     OVPN_ID="$(basename "${OVPN_CONF%.*}" | sed -e "s/\W/_/g")"
     uci -q delete openvpn."${OVPN_ID}"
     uci set openvpn."${OVPN_ID}"="openvpn"
-    uci set openvpn."${OVPN_ID}".enabled="1" # this line force enables the ovpn conf!
+    uci set openvpn."${OVPN_ID}".enabled="1"
     uci set openvpn."${OVPN_ID}".config="${OVPN_CONF}"
   done
   uci commit openvpn
@@ -205,17 +236,29 @@ config dropbear
         option interface 'br-lan'
 EOF
 
-
-  wget -O /etc/dropbear/authorized_keys ${pastebin_pub_key} # public key for ssh
-  ## ADD CHECK FOR FAIL (CAUSE IF NO KEY YOU WONT BE ABLE TO SSH...)
+while true; do
+    if ! wget -O /etc/dropbear/authorized_keys ${pastebin_pub_key} >/dev/null; then
+        echo "SSH-RSA Key Download Failed! Press Enter to retry or Ctrl+C to exit."
+        read -r
+    else
+        break
+    fi
+done
 
   uci commit dropbear
 
   echo "Do you want to download adapter.sh? (y/n)"
   read -r ques
-if [[ ${ques}=="y" ]]; then
+if [[ ${ques} == "y" ]]; then
   cd ~
-  wget https://raw.githubusercontent.com/CameronS2005/rpi3-openwrt/main/adapter.sh
+  while true; do
+    if ! wget https://raw.githubusercontent.com/CameronS2005/rpi3-openwrt/main/adapter.sh >/dev/null; then
+        echo "Adguard Download Failed! Press Enter to retry or Ctrl+C to exit."
+        read -r
+    else
+        break
+    fi
+done
   chmod +x adapter.sh
 fi
 
